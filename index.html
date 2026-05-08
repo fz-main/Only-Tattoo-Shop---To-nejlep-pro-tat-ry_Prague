@@ -1,0 +1,1520 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Only Tattoo Shop — To nejlepší pro tatéry | Praha</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@300;400;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0a0a;
+    --ink: #111111;
+    --deep: #1a1a1a;
+    --gold: #c8a84b;
+    --gold2: #e8c878;
+    --red: #c0392b;
+    --white: #f5f0e8;
+    --grey: #888;
+    --card-bg: #161616;
+    --border: rgba(200,168,75,0.2);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; font-size: 16px; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* ─── CUSTOM CURSOR ─── */
+  #cursor {
+    position: fixed;
+    width: 12px; height: 12px;
+    background: var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%,-50%);
+    transition: transform .1s, width .2s, height .2s, background .2s;
+  }
+  #cursor-ring {
+    position: fixed;
+    width: 36px; height: 36px;
+    border: 1px solid rgba(200,168,75,.5);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%,-50%);
+    transition: transform .18s ease, width .25s, height .25s, opacity .25s;
+  }
+  body:hover #cursor-ring { opacity: 1; }
+
+  /* ─── NOISE OVERLAY ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    pointer-events: none;
+    z-index: 9000;
+  }
+
+  /* ─── LOADER ─── */
+  #loader {
+    position: fixed;
+    inset: 0;
+    background: var(--black);
+    z-index: 8000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: opacity .6s ease, visibility .6s;
+  }
+  #loader.hidden { opacity: 0; visibility: hidden; }
+  .loader-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(48px, 10vw, 100px);
+    letter-spacing: .1em;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--gold);
+    animation: logoReveal 1.2s ease forwards;
+  }
+  .loader-bar-wrap {
+    width: min(280px, 60vw);
+    height: 1px;
+    background: rgba(200,168,75,.2);
+    margin-top: 30px;
+    overflow: hidden;
+  }
+  .loader-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--gold2));
+    width: 0%;
+    animation: barFill 1.8s cubic-bezier(.4,0,.2,1) forwards;
+  }
+  .loader-pct {
+    font-family: 'Oswald', sans-serif;
+    font-size: 13px;
+    letter-spacing: .2em;
+    color: var(--gold);
+    margin-top: 12px;
+    opacity: .7;
+  }
+  @keyframes logoReveal {
+    from { opacity: 0; letter-spacing: .4em; }
+    to   { opacity: 1; letter-spacing: .1em; }
+  }
+  @keyframes barFill {
+    from { width: 0; }
+    to   { width: 100%; }
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 700;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 5%;
+    background: rgba(10,10,10,0);
+    backdrop-filter: blur(0px);
+    transition: background .4s, backdrop-filter .4s, padding .3s;
+    border-bottom: 1px solid transparent;
+  }
+  nav.scrolled {
+    background: rgba(10,10,10,.92);
+    backdrop-filter: blur(18px);
+    padding: 12px 5%;
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    letter-spacing: .08em;
+    color: var(--gold);
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+  }
+  .nav-logo span { font-size: 9px; letter-spacing: .3em; color: var(--grey); font-family: 'Inter', sans-serif; font-weight: 300; text-transform: uppercase; }
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-family: 'Oswald', sans-serif;
+    font-size: 13px;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: rgba(245,240,232,.65);
+    text-decoration: none;
+    position: relative;
+    transition: color .2s;
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    left: 0; bottom: -4px;
+    width: 0; height: 1px;
+    background: var(--gold);
+    transition: width .3s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-links a:hover::after { width: 100%; }
+
+  /* Lang switcher */
+  .lang-switch {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .lang-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--grey);
+    font-family: 'Oswald', sans-serif;
+    font-size: 11px;
+    letter-spacing: .1em;
+    padding: 4px 8px;
+    cursor: none;
+    transition: all .2s;
+    text-transform: uppercase;
+  }
+  .lang-btn:hover, .lang-btn.active {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: rgba(200,168,75,.08);
+  }
+
+  /* Hamburger */
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: none;
+    padding: 4px;
+  }
+  .hamburger span {
+    display: block;
+    width: 24px;
+    height: 1.5px;
+    background: var(--white);
+    transition: all .3s;
+  }
+  .hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+  /* Mobile menu */
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(10,10,10,.97);
+    z-index: 600;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 36px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .4s;
+  }
+  .mobile-menu.open { opacity: 1; pointer-events: all; }
+  .mobile-menu a {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(36px, 8vw, 60px);
+    letter-spacing: .08em;
+    color: var(--white);
+    text-decoration: none;
+    transition: color .2s;
+  }
+  .mobile-menu a:hover { color: var(--gold); }
+  .mobile-menu .lang-switch { margin-top: 20px; }
+
+  /* ─── HERO ─── */
+  #hero {
+    min-height: 100svh;
+    display: grid;
+    place-items: center;
+    position: relative;
+    overflow: hidden;
+    padding: 80px 5% 0;
+  }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 60%, rgba(200,168,75,.08) 0%, transparent 70%),
+                radial-gradient(ellipse 50% 80% at 10% 80%, rgba(192,57,43,.06) 0%, transparent 60%);
+  }
+  /* Animated grid lines */
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(200,168,75,.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(200,168,75,.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    animation: gridDrift 30s linear infinite;
+  }
+  @keyframes gridDrift {
+    from { background-position: 0 0; }
+    to   { background-position: 60px 60px; }
+  }
+  /* Floating ink blobs */
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0;
+    animation: blobFloat 12s ease-in-out infinite;
+  }
+  .blob-1 { width: 400px; height: 400px; background: rgba(200,168,75,.12); top: -100px; right: -100px; animation-delay: 0s; }
+  .blob-2 { width: 300px; height: 300px; background: rgba(192,57,43,.1); bottom: 100px; left: -80px; animation-delay: -4s; }
+  .blob-3 { width: 250px; height: 250px; background: rgba(200,168,75,.08); top: 40%; left: 60%; animation-delay: -8s; }
+  @keyframes blobFloat {
+    0%,100% { transform: translate(0,0) scale(1); opacity: .6; }
+    33%      { transform: translate(30px,-20px) scale(1.05); opacity: .9; }
+    66%      { transform: translate(-20px,15px) scale(.95); opacity: .5; }
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    max-width: 900px;
+  }
+  .hero-tag {
+    display: inline-block;
+    font-family: 'Oswald', sans-serif;
+    font-size: 11px;
+    letter-spacing: .4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid var(--border);
+    padding: 6px 18px;
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: fadeUp .8s .3s ease forwards;
+  }
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(60px, 14vw, 150px);
+    line-height: .9;
+    letter-spacing: .04em;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(245,240,232,.8);
+    opacity: 0;
+    animation: fadeUp .8s .5s ease forwards;
+  }
+  .hero-title .fill {
+    -webkit-text-stroke: 0;
+    color: var(--gold);
+  }
+  .hero-subtitle {
+    font-family: 'Oswald', sans-serif;
+    font-size: clamp(13px, 2vw, 17px);
+    letter-spacing: .12em;
+    color: rgba(245,240,232,.5);
+    margin-top: 20px;
+    font-weight: 300;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeUp .8s .7s ease forwards;
+  }
+  .hero-cta {
+    display: inline-flex;
+    gap: 16px;
+    margin-top: 48px;
+    flex-wrap: wrap;
+    justify-content: center;
+    opacity: 0;
+    animation: fadeUp .8s .9s ease forwards;
+  }
+  .btn-primary {
+    font-family: 'Oswald', sans-serif;
+    font-size: 13px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--black);
+    background: linear-gradient(135deg, var(--gold), var(--gold2));
+    padding: 14px 36px;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    transition: transform .2s, box-shadow .2s;
+  }
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--gold2), var(--gold));
+    opacity: 0;
+    transition: opacity .3s;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 16px 40px rgba(200,168,75,.3); }
+  .btn-primary:hover::before { opacity: 1; }
+  .btn-primary span { position: relative; }
+
+  .btn-outline {
+    font-family: 'Oswald', sans-serif;
+    font-size: 13px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--white);
+    border: 1px solid rgba(245,240,232,.3);
+    padding: 14px 36px;
+    text-decoration: none;
+    transition: all .2s;
+  }
+  .btn-outline:hover { border-color: var(--gold); color: var(--gold); background: rgba(200,168,75,.05); }
+
+  /* Scroll indicator */
+  .scroll-indicator {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    animation: fadeUp .8s 1.4s ease forwards;
+  }
+  .scroll-indicator span {
+    font-size: 9px;
+    letter-spacing: .3em;
+    text-transform: uppercase;
+    color: var(--grey);
+    font-family: 'Oswald', sans-serif;
+  }
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+  @keyframes scrollPulse {
+    0%,100% { transform: scaleY(1); opacity: .6; }
+    50%      { transform: scaleY(.5); opacity: 1; }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── SECTION BASE ─── */
+  section { padding: clamp(60px, 10vw, 120px) 5%; }
+  .section-label {
+    font-family: 'Oswald', sans-serif;
+    font-size: 10px;
+    letter-spacing: .5em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+    display: block;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(38px, 7vw, 80px);
+    letter-spacing: .04em;
+    line-height: 1;
+  }
+  .section-title .outline {
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(200,168,75,.5);
+  }
+  .divider {
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+    margin: 20px 0 40px;
+  }
+
+  /* Scroll reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity .7s ease, transform .7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ─── TICKER ─── */
+  .ticker-wrap {
+    background: linear-gradient(135deg, var(--gold), var(--gold2));
+    padding: 14px 0;
+    overflow: hidden;
+    position: relative;
+  }
+  .ticker {
+    display: flex;
+    gap: 0;
+    white-space: nowrap;
+    animation: tickerRun 22s linear infinite;
+  }
+  .ticker-item {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: .08em;
+    color: var(--black);
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+    gap: 40px;
+  }
+  .ticker-item::after {
+    content: '✦';
+    opacity: .5;
+  }
+  @keyframes tickerRun {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  /* ─── ADVANTAGES ─── */
+  #advantages { background: var(--deep); }
+  .adv-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 2px;
+    margin-top: 50px;
+  }
+  .adv-card {
+    background: var(--card-bg);
+    padding: 40px 32px;
+    position: relative;
+    overflow: hidden;
+    transition: transform .3s, background .3s;
+    cursor: none;
+  }
+  .adv-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(200,168,75,.06), transparent);
+    opacity: 0;
+    transition: opacity .3s;
+  }
+  .adv-card:hover { transform: translateY(-4px); }
+  .adv-card:hover::before { opacity: 1; }
+  .adv-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 0; height: 2px;
+    background: linear-gradient(90deg, var(--gold), var(--gold2));
+    transition: width .4s;
+  }
+  .adv-card:hover::after { width: 100%; }
+  .adv-icon {
+    font-size: 32px;
+    margin-bottom: 20px;
+    display: block;
+  }
+  .adv-num {
+    position: absolute;
+    top: 16px; right: 20px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 60px;
+    color: rgba(200,168,75,.06);
+    line-height: 1;
+  }
+  .adv-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: .05em;
+    color: var(--white);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+  .adv-text {
+    font-size: 14px;
+    line-height: 1.7;
+    color: rgba(245,240,232,.55);
+  }
+
+  /* ─── SERVICES ─── */
+  #services { background: var(--black); }
+  .services-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    margin-top: 50px;
+  }
+  .services-visual {
+    position: relative;
+    aspect-ratio: 4/5;
+    background: var(--card-bg);
+    overflow: hidden;
+  }
+  .services-visual-inner {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(200,168,75,.05) 0%, transparent 60%),
+                linear-gradient(225deg, rgba(192,57,43,.05) 0%, transparent 60%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .services-visual-text {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(80px, 12vw, 140px);
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(200,168,75,.15);
+    letter-spacing: .05em;
+    writing-mode: vertical-rl;
+    animation: rotateSlow 20s linear infinite;
+  }
+  @keyframes rotateSlow {
+    from { transform: translateY(0); }
+    to   { transform: translateY(-20px); }
+  }
+  .services-visual-badge {
+    position: absolute;
+    bottom: 24px; right: 24px;
+    background: linear-gradient(135deg, var(--gold), var(--gold2));
+    color: var(--black);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: .1em;
+    padding: 10px 16px;
+  }
+  .services-list { display: flex; flex-direction: column; gap: 4px; }
+  .service-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 24px;
+    border: 1px solid transparent;
+    transition: all .3s;
+    position: relative;
+    overflow: hidden;
+    cursor: none;
+  }
+  .service-item::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--card-bg);
+    z-index: -1;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform .3s;
+  }
+  .service-item:hover { border-color: var(--border); }
+  .service-item:hover::before { transform: scaleX(1); }
+  .service-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--gold);
+    opacity: .4;
+    line-height: 1;
+    flex-shrink: 0;
+    transition: opacity .3s;
+  }
+  .service-item:hover .service-num { opacity: 1; }
+  .service-info {}
+  .service-name {
+    font-family: 'Oswald', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: var(--white);
+    margin-bottom: 6px;
+  }
+  .service-desc {
+    font-size: 13px;
+    line-height: 1.6;
+    color: rgba(245,240,232,.5);
+  }
+
+  /* ─── PRODUCTS / ASSORTMENT ─── */
+  #products { background: var(--deep); }
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+    margin-top: 50px;
+  }
+  .product-card {
+    background: var(--card-bg);
+    border: 1px solid transparent;
+    padding: 0;
+    overflow: hidden;
+    transition: all .3s;
+    position: relative;
+    cursor: none;
+    group: true;
+  }
+  .product-card:hover { border-color: var(--border); transform: translateY(-6px); box-shadow: 0 24px 60px rgba(0,0,0,.4); }
+  .product-thumb {
+    aspect-ratio: 1;
+    background: linear-gradient(135deg, #1e1e1e, #141414);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .product-thumb::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(200,168,75,.08), transparent);
+    opacity: 0;
+    transition: opacity .3s;
+  }
+  .product-card:hover .product-thumb::before { opacity: 1; }
+  .product-emoji {
+    font-size: 56px;
+    transition: transform .4s;
+    filter: grayscale(.3);
+  }
+  .product-card:hover .product-emoji { transform: scale(1.1) rotate(-4deg); filter: grayscale(0); }
+  .product-overlay {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 12px 16px;
+    background: linear-gradient(to top, rgba(10,10,10,.8), transparent);
+    opacity: 0;
+    transition: opacity .3s;
+    font-family: 'Oswald', sans-serif;
+    font-size: 11px;
+    letter-spacing: .15em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+  .product-card:hover .product-overlay { opacity: 1; }
+  .product-info { padding: 20px; }
+  .product-name {
+    font-family: 'Oswald', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--white);
+    margin-bottom: 6px;
+  }
+  .product-desc {
+    font-size: 12px;
+    line-height: 1.6;
+    color: rgba(245,240,232,.45);
+  }
+  .product-tag {
+    display: inline-block;
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    background: rgba(200,168,75,.1);
+    color: var(--gold);
+    border: 1px solid rgba(200,168,75,.2);
+    padding: 3px 8px;
+    margin-top: 10px;
+    font-family: 'Oswald', sans-serif;
+  }
+
+  /* ─── STATS BAND ─── */
+  .stats-band {
+    background: linear-gradient(135deg, rgba(200,168,75,.08), rgba(200,168,75,.03));
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 60px 5%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 40px;
+    text-align: center;
+  }
+  .stat-item {}
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(48px, 8vw, 80px);
+    letter-spacing: .02em;
+    background: linear-gradient(135deg, var(--gold), var(--gold2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: block;
+    line-height: 1;
+  }
+  .stat-label {
+    font-family: 'Oswald', sans-serif;
+    font-size: 12px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--grey);
+    margin-top: 6px;
+    display: block;
+  }
+
+  /* ─── CONTACT ─── */
+  #contact { background: var(--black); }
+  .contact-layout {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 60px;
+    margin-top: 50px;
+  }
+  .contact-info { display: flex; flex-direction: column; gap: 28px; }
+  .contact-block {}
+  .contact-block-label {
+    font-family: 'Oswald', sans-serif;
+    font-size: 10px;
+    letter-spacing: .3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+    display: block;
+  }
+  .contact-block-value {
+    font-family: 'Oswald', sans-serif;
+    font-size: 17px;
+    font-weight: 400;
+    color: var(--white);
+    text-decoration: none;
+    transition: color .2s;
+    display: block;
+    line-height: 1.5;
+  }
+  a.contact-block-value:hover { color: var(--gold); }
+  .contact-hours { display: flex; flex-direction: column; gap: 6px; }
+  .hours-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: rgba(245,240,232,.55);
+    padding-bottom: 6px;
+    border-bottom: 1px solid rgba(255,255,255,.05);
+  }
+  .hours-row .day { font-family: 'Oswald', sans-serif; font-weight: 300; letter-spacing: .05em; }
+  .hours-row .time { color: var(--gold); }
+
+  /* Map */
+  .map-container {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .map-container::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 1px solid rgba(200,168,75,.15);
+    z-index: 1;
+    pointer-events: none;
+  }
+  .map-container iframe {
+    width: 100%;
+    height: 420px;
+    display: block;
+    filter: grayscale(1) invert(1) contrast(.8) brightness(.6) sepia(.3) hue-rotate(180deg);
+    transition: filter .4s;
+  }
+  .map-container:hover iframe { filter: grayscale(.6) invert(1) contrast(.85) brightness(.65) sepia(.3) hue-rotate(180deg); }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--ink);
+    border-top: 1px solid var(--border);
+    padding: 40px 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: .1em;
+    color: var(--gold);
+  }
+  .footer-copy {
+    font-size: 12px;
+    color: var(--grey);
+    letter-spacing: .05em;
+  }
+  .footer-links {
+    display: flex;
+    gap: 20px;
+    list-style: none;
+  }
+  .footer-links a {
+    font-family: 'Oswald', sans-serif;
+    font-size: 11px;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--grey);
+    text-decoration: none;
+    transition: color .2s;
+  }
+  .footer-links a:hover { color: var(--gold); }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 900px) {
+    .services-layout { grid-template-columns: 1fr; }
+    .services-visual { aspect-ratio: 3/2; }
+    .contact-layout { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+    .mobile-menu { display: flex; }
+    body { cursor: auto; }
+    #cursor, #cursor-ring { display: none; }
+  }
+  @media (max-width: 600px) {
+    .adv-grid { grid-template-columns: 1fr; }
+    footer { flex-direction: column; text-align: center; }
+    .footer-links { flex-wrap: wrap; justify-content: center; }
+    .hero-cta { flex-direction: column; align-items: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- CUSTOM CURSOR -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-logo" id="loaderLogo">ONLY</div>
+  <div class="loader-bar-wrap"><div class="loader-bar"></div></div>
+  <div class="loader-pct" id="loaderPct">0%</div>
+</div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a class="nav-logo" href="#hero">
+    ONLY TATTOO<span>The best for tattooers · Praha</span>
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#advantages" data-i18n="nav_adv">Výhody</a></li>
+    <li><a href="#services" data-i18n="nav_srv">Služby</a></li>
+    <li><a href="#products" data-i18n="nav_prd">Sortiment</a></li>
+    <li><a href="#contact" data-i18n="nav_cnt">Kontakt</a></li>
+  </ul>
+  <div style="display:flex;align-items:center;gap:16px">
+    <div class="lang-switch">
+      <button class="lang-btn active" onclick="setLang('cs')">CS</button>
+      <button class="lang-btn" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('de')">DE</button>
+      <button class="lang-btn" onclick="setLang('ru')">RU</button>
+    </div>
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#advantages" onclick="toggleMenu()" data-i18n="nav_adv">Výhody</a>
+  <a href="#services" onclick="toggleMenu()" data-i18n="nav_srv">Služby</a>
+  <a href="#products" onclick="toggleMenu()" data-i18n="nav_prd">Sortiment</a>
+  <a href="#contact" onclick="toggleMenu()" data-i18n="nav_cnt">Kontakt</a>
+  <div class="lang-switch">
+    <button class="lang-btn active" onclick="setLang('cs');toggleMenu()">CS</button>
+    <button class="lang-btn" onclick="setLang('en');toggleMenu()">EN</button>
+    <button class="lang-btn" onclick="setLang('de');toggleMenu()">DE</button>
+    <button class="lang-btn" onclick="setLang('ru');toggleMenu()">RU</button>
+  </div>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+  <div class="hero-content">
+    <div class="hero-tag" data-i18n="hero_tag">Praha · Profesionální vybavení pro tatéry</div>
+    <h1 class="hero-title">
+      <span class="fill">ONLY</span><br>TATTOO<br>SHOP
+    </h1>
+    <p class="hero-subtitle" data-i18n="hero_sub">To nejlepší pro tatéry — profesionální potřeby &amp; vybavení</p>
+    <div class="hero-cta">
+      <a href="#products" class="btn-primary"><span data-i18n="hero_btn1">Prohlédnout sortiment</span></a>
+      <a href="#contact" class="btn-outline" data-i18n="hero_btn2">Kontakt</a>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <div class="scroll-line"></div>
+    <span data-i18n="scroll">Scroll</span>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker" id="ticker">
+    <div class="ticker-item">TATTOO MACHINES</div>
+    <div class="ticker-item">INK &amp; COLORS</div>
+    <div class="ticker-item">CARTRIDGES</div>
+    <div class="ticker-item">NEEDLES</div>
+    <div class="ticker-item">POWER SUPPLIES</div>
+    <div class="ticker-item">HYGIENE</div>
+    <div class="ticker-item">ACCESSORIES</div>
+    <div class="ticker-item">PROFESSIONAL GRADE</div>
+    <!-- duplicate for seamless loop -->
+    <div class="ticker-item">TATTOO MACHINES</div>
+    <div class="ticker-item">INK &amp; COLORS</div>
+    <div class="ticker-item">CARTRIDGES</div>
+    <div class="ticker-item">NEEDLES</div>
+    <div class="ticker-item">POWER SUPPLIES</div>
+    <div class="ticker-item">HYGIENE</div>
+    <div class="ticker-item">ACCESSORIES</div>
+    <div class="ticker-item">PROFESSIONAL GRADE</div>
+  </div>
+</div>
+
+<!-- ADVANTAGES -->
+<section id="advantages">
+  <div class="reveal">
+    <span class="section-label" data-i18n="adv_label">Proč my</span>
+    <h2 class="section-title" data-i18n="adv_title">NAŠE <span class="outline">VÝHODY</span></h2>
+    <div class="divider"></div>
+  </div>
+  <div class="adv-grid">
+    <div class="adv-card reveal">
+      <span class="adv-num">01</span>
+      <span class="adv-icon">🏆</span>
+      <div class="adv-title" data-i18n="adv1_t">Top značky</div>
+      <div class="adv-text" data-i18n="adv1_d">Nabízíme pouze prověřené světové značky — Kwadron, Bishop, Cheyenne, Dynamic, World Famous a další.</div>
+    </div>
+    <div class="adv-card reveal">
+      <span class="adv-num">02</span>
+      <span class="adv-icon">⚡</span>
+      <div class="adv-title" data-i18n="adv2_t">Rychlé dodání</div>
+      <div class="adv-text" data-i18n="adv2_d">Skladem i na objednávku. Zásilky expedujeme tentýž nebo následující pracovní den.</div>
+    </div>
+    <div class="adv-card reveal">
+      <span class="adv-num">03</span>
+      <span class="adv-icon">💎</span>
+      <div class="adv-title" data-i18n="adv3_t">Profesionální přístup</div>
+      <div class="adv-text" data-i18n="adv3_d">Tým s letitými zkušenostmi v oboru, kteří sami tetují. Víme, co tatér skutečně potřebuje.</div>
+    </div>
+    <div class="adv-card reveal">
+      <span class="adv-num">04</span>
+      <span class="adv-icon">📦</span>
+      <div class="adv-title" data-i18n="adv4_t">Kamenný obchod + e-shop</div>
+      <div class="adv-text" data-i18n="adv4_d">Navštivte nás osobně v Praze nebo nakupujte pohodlně online — vždy stejná kvalita a cena.</div>
+    </div>
+    <div class="adv-card reveal">
+      <span class="adv-num">05</span>
+      <span class="adv-icon">🔬</span>
+      <div class="adv-title" data-i18n="adv5_t">Certifikované produkty</div>
+      <div class="adv-text" data-i18n="adv5_d">Veškeré barvy a jehly splňují přísné normy EU. Váš zákazník je v bezpečí.</div>
+    </div>
+    <div class="adv-card reveal">
+      <span class="adv-num">06</span>
+      <span class="adv-icon">🤝</span>
+      <div class="adv-title" data-i18n="adv6_t">Věrnostní program</div>
+      <div class="adv-text" data-i18n="adv6_d">Pravidelní zákazníci získávají individuální ceny, slevy a přístup k exkluzivním novinkám dřív než ostatní.</div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-band">
+  <div class="stat-item reveal">
+    <span class="stat-num" data-count="500">0</span>
+    <span class="stat-label" data-i18n="stat1">produktů skladem</span>
+  </div>
+  <div class="stat-item reveal">
+    <span class="stat-num" data-count="20">0</span>
+    <span class="stat-label" data-i18n="stat2">top značek</span>
+  </div>
+  <div class="stat-item reveal">
+    <span class="stat-num" data-count="1000">0</span>
+    <span class="stat-label" data-i18n="stat3">spokojených tatérů</span>
+  </div>
+  <div class="stat-item reveal">
+    <span class="stat-num" data-count="24">0</span>
+    <span class="stat-label" data-i18n="stat4">h expedice</span>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="reveal">
+    <span class="section-label" data-i18n="srv_label">Co nabízíme</span>
+    <h2 class="section-title" data-i18n="srv_title">NAŠE <span class="outline">SLUŽBY</span></h2>
+    <div class="divider"></div>
+  </div>
+  <div class="services-layout">
+    <div class="services-visual reveal">
+      <div class="services-visual-inner">
+        <div class="services-visual-text">TATTOO</div>
+      </div>
+      <div class="services-visual-badge" data-i18n="srv_badge">Pro tatéry · Since Praha</div>
+    </div>
+    <div class="services-list reveal">
+      <div class="service-item">
+        <div class="service-num">01</div>
+        <div class="service-info">
+          <div class="service-name" data-i18n="s1t">Osobní poradenství</div>
+          <div class="service-desc" data-i18n="s1d">Pomůžeme vybrat správné vybavení pro váš styl tetování. Konzultace zdarma — v obchodě nebo po telefonu.</div>
+        </div>
+      </div>
+      <div class="service-item">
+        <div class="service-num">02</div>
+        <div class="service-info">
+          <div class="service-name" data-i18n="s2t">Prodej vybavení</div>
+          <div class="service-desc" data-i18n="s2d">Strojky, cartridges, barvy, jehly, napájení, přídavná příslušenství — vše pod jednou střechou.</div>
+        </div>
+      </div>
+      <div class="service-item">
+        <div class="service-num">03</div>
+        <div class="service-info">
+          <div class="service-name" data-i18n="s3t">Hygienické potřeby</div>
+          <div class="service-desc" data-i18n="s3d">Dezinfekce, ochranné fólie, rukavice, přípravky na hojení — vše pro bezpečné a profesionální studio.</div>
+        </div>
+      </div>
+      <div class="service-item">
+        <div class="service-num">04</div>
+        <div class="service-info">
+          <div class="service-name" data-i18n="s4t">Velkoobchod pro studia</div>
+          <div class="service-desc" data-i18n="s4d">Provozujete studio? Nabízíme zvýhodněné ceny pro pravidelné odběratele a komplexní zásobování vašeho provozu.</div>
+        </div>
+      </div>
+      <div class="service-item">
+        <div class="service-num">05</div>
+        <div class="service-info">
+          <div class="service-name" data-i18n="s5t">Servis &amp; záruky</div>
+          <div class="service-desc" data-i18n="s5d">Plná záruka na všechny produkty, rychlé řešení reklamací a odborná podpora při problémech se zařízením.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section id="products">
+  <div class="reveal">
+    <span class="section-label" data-i18n="prd_label">Sortiment</span>
+    <h2 class="section-title" data-i18n="prd_title">NÁŠ <span class="outline">SORTIMENT</span></h2>
+    <div class="divider"></div>
+  </div>
+  <div class="products-grid">
+    <div class="product-card reveal">
+      <div class="product-thumb">
+        <div class="product-emoji">🖊️</div>
+        <div class="product-overlay" data-i18n="prd_view">Zobrazit</div>
+      </div>
+      <div class="product-info">
+        <div class="product-name" data-i18n="p1n">Tetovací strojky</div>
+        <div class="product-desc" data-i18n="p1d">Pen, rotary, coil — Bishop, Cheyenne, FK Irons, Mast, Dragonhawk a další prémiové značky.</div>
+        <span class="product-tag">Machines</span>
+      </div>
+    </div>
+    <div class="product-card reveal">
+      <div class="product-thumb">
+        <div class="product-emoji">🎨</div>
+        <div class="product-overlay" data-i18n="prd_view">Zobrazit</div>
+      </div>
+      <div class="product-info">
+        <div class="product-name" data-i18n="p2n">Barvy &amp; inkousty</div>
+        <div class="product-desc" data-i18n="p2d">World Famous, Dynamic, Intenze, Eternal, Quantum — EU certifikované, živé a trvanlivé barvy.</div>
+        <span class="product-tag">Inks</span>
+      </div>
+    </div>
+    <div class="product-card reveal">
+      <div class="product-thumb">
+        <div class="product-emoji">💉</div>
+        <div class="product-overlay" data-i18n="prd_view">Zobrazit</div>
+      </div>
+      <div class="product-info">
+        <div class="product-name" data-i18n="p3n">Cartridges &amp; jehly</div>
+        <div class="product-desc" data-i18n="p3d">Kwadron, Elite, Cheyenne — jednorázové, sterilní, pro každý styl a techniku tetování.</div>
+        <span class="product-tag">Needles</span>
+      </div>
+    </div>
+    <div class="product-card reveal">
+      <div class="product-thumb">
+        <div class="product-emoji">⚡</div>
+        <div class="product-overlay" data-i18n="prd_view">Zobrazit</div>
+      </div>
+      <div class="product-info">
+        <div class="product-name" data-i18n="p4n">Napájení &amp; nožní spínače</div>
+        <div class="product-desc" data-i18n="p4d">Stabilní zdroje s přesným nastavením volts pro dokonalou kontrolu nad strojkem.</div>
+        <span class="product-tag">Power</span>
+      </div>
+    </div>
+    <div class="product-card reveal">
+      <div class="product-thumb">
+        <div class="product-emoji">🧴</div>
+        <div class="product-overlay" data-i18n="prd_view">Zobrazit</div>
+      </div>
+      <div class="product-info">
+        <div class="product-name" data-i18n="p5n">Hygienické potřeby</div>
+        <div class="product-desc" data-i18n="p5d">Dezinfekce, ochranné fólie, rukavice, savé podložky, jednorázové pomůcky pro čisté studio.</div>
+        <span class="product-tag">Hygiene</span>
+      </div>
+    </div>
+    <div class="product-card reveal">
+      <div class="product-thumb">
+        <div class="product-emoji">🛠️</div>
+        <div class="product-overlay" data-i18n="prd_view">Zobrazit</div>
+      </div>
+      <div class="product-info">
+        <div class="product-name" data-i18n="p6n">Příslušenství &amp; doplňky</div>
+        <div class="product-desc" data-i18n="p6d">Gripy, klipy, transfer papír, vazelína, přenosné pouzdra, světla a vše co studio potřebuje.</div>
+        <span class="product-tag">Accessories</span>
+      </div>
+    </div>
+    <div class="product-card reveal">
+      <div class="product-thumb">
+        <div class="product-emoji">🏥</div>
+        <div class="product-overlay" data-i18n="prd_view">Zobrazit</div>
+      </div>
+      <div class="product-info">
+        <div class="product-name" data-i18n="p7n">Aftercare &amp; hojení</div>
+        <div class="product-desc" data-i18n="p7d">Speciální krémy, ochranné fólie Dermalize, přípravky pro rychlé a bezproblémové hojení tetování.</div>
+        <span class="product-tag">Aftercare</span>
+      </div>
+    </div>
+    <div class="product-card reveal">
+      <div class="product-thumb">
+        <div class="product-emoji">🩺</div>
+        <div class="product-overlay" data-i18n="prd_view">Zobrazit</div>
+      </div>
+      <div class="product-info">
+        <div class="product-name" data-i18n="p8n">Sterilizace &amp; bezpečnost</div>
+        <div class="product-desc" data-i18n="p8d">Autoklávy, sterilizační sáčky, indikátory — vše pro provoz studia v souladu s hygienickými normami.</div>
+        <span class="product-tag">Safety</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="reveal">
+    <span class="section-label" data-i18n="cnt_label">Kde nás najdete</span>
+    <h2 class="section-title" data-i18n="cnt_title">KONTAKT &amp; <span class="outline">MAPA</span></h2>
+    <div class="divider"></div>
+  </div>
+  <div class="contact-layout">
+    <div class="contact-info reveal">
+      <div class="contact-block">
+        <span class="contact-block-label" data-i18n="cnt_addr">Adresa</span>
+        <span class="contact-block-value">Praha, Česká republika</span>
+        <span class="contact-block-value" style="font-size:14px;color:var(--grey);margin-top:4px" data-i18n="cnt_addr_sub">Najdete nás v centru Prahy — detaily na mapě níže</span>
+      </div>
+      <div class="contact-block">
+        <span class="contact-block-label" data-i18n="cnt_phone">Telefon</span>
+        <a href="tel:+420000000000" class="contact-block-value">+420 — kontaktujte nás</a>
+      </div>
+      <div class="contact-block">
+        <span class="contact-block-label">Google Maps</span>
+        <a href="https://maps.google.com/?q=Only+Tattoo+Shop+Praha" target="_blank" class="contact-block-value" style="font-size:14px;color:var(--gold)">→ Otevřít v Google Maps</a>
+      </div>
+      <div class="contact-block">
+        <span class="contact-block-label" data-i18n="cnt_hours">Otevírací doba</span>
+        <div class="contact-hours">
+          <div class="hours-row"><span class="day" data-i18n="mon">Pondělí – Pátek</span><span class="time">10:00 – 19:00</span></div>
+          <div class="hours-row"><span class="day" data-i18n="sat">Sobota</span><span class="time">10:00 – 17:00</span></div>
+          <div class="hours-row"><span class="day" data-i18n="sun">Neděle</span><span class="time" data-i18n="closed">Zavřeno</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="reveal">
+      <div class="map-container">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2560.1234!2d14.4400115!3d50.0710678!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x470b9486971d4009%3A0x9100e82dd939d8c2!2sOnly%20Tattoo%20Shop%20-%20To%20nejlep%C5%A1%C3%AD%20pro%20tat%C3%A9ry!5e0!3m2!1scs!2scz!4v1699999999999!5m2!1scs!2scz"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          title="Only Tattoo Shop Praha"
+          allowfullscreen>
+        </iframe>
+      </div>
+      <div style="margin-top:16px;padding:16px;background:var(--card-bg);border:1px solid var(--border)">
+        <p style="font-size:12px;color:var(--grey);line-height:1.6" data-i18n="cnt_note">Navštivte nás nebo nás kontaktujte pro více informací o sortimentu, velkoobchodních cenách nebo speciálních objednávkách.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">ONLY TATTOO SHOP</div>
+  <div class="footer-copy" data-i18n="footer_copy">© 2025 Only Tattoo Shop Praha — To nejlepší pro tatéry</div>
+  <ul class="footer-links">
+    <li><a href="#hero" data-i18n="nav_home">Úvod</a></li>
+    <li><a href="#products" data-i18n="nav_prd">Sortiment</a></li>
+    <li><a href="#contact" data-i18n="nav_cnt">Kontakt</a></li>
+  </ul>
+</footer>
+
+<script>
+// ─── TRANSLATIONS ───
+const i18n = {
+  cs: {
+    nav_adv: "Výhody", nav_srv: "Služby", nav_prd: "Sortiment", nav_cnt: "Kontakt", nav_home: "Úvod",
+    hero_tag: "Praha · Profesionální vybavení pro tatéry",
+    hero_sub: "To nejlepší pro tatéry — profesionální potřeby & vybavení",
+    hero_btn1: "Prohlédnout sortiment", hero_btn2: "Kontakt", scroll: "Scroll",
+    adv_label: "Proč my", adv_title: "NAŠE ", adv_title_outline: "VÝHODY",
+    adv1_t: "Top značky", adv1_d: "Nabízíme pouze prověřené světové značky — Kwadron, Bishop, Cheyenne, Dynamic, World Famous a další.",
+    adv2_t: "Rychlé dodání", adv2_d: "Skladem i na objednávku. Zásilky expedujeme tentýž nebo následující pracovní den.",
+    adv3_t: "Profesionální přístup", adv3_d: "Tým s letitými zkušenostmi v oboru, kteří sami tetují. Víme, co tatér skutečně potřebuje.",
+    adv4_t: "Kamenný obchod + e-shop", adv4_d: "Navštivte nás osobně v Praze nebo nakupujte pohodlně online — vždy stejná kvalita a cena.",
+    adv5_t: "Certifikované produkty", adv5_d: "Veškeré barvy a jehly splňují přísné normy EU. Váš zákazník je v bezpečí.",
+    adv6_t: "Věrnostní program", adv6_d: "Pravidelní zákazníci získávají individuální ceny, slevy a přístup k exkluzivním novinkám dřív než ostatní.",
+    stat1: "produktů skladem", stat2: "top značek", stat3: "spokojených tatérů", stat4: "h expedice",
+    srv_label: "Co nabízíme", srv_title: "NAŠE ", srv_badge: "Pro tatéry · Since Praha",
+    s1t: "Osobní poradenství", s1d: "Pomůžeme vybrat správné vybavení pro váš styl tetování. Konzultace zdarma — v obchodě nebo po telefonu.",
+    s2t: "Prodej vybavení", s2d: "Strojky, cartridges, barvy, jehly, napájení, přídavná příslušenství — vše pod jednou střechou.",
+    s3t: "Hygienické potřeby", s3d: "Dezinfekce, ochranné fólie, rukavice, přípravky na hojení — vše pro bezpečné a profesionální studio.",
+    s4t: "Velkoobchod pro studia", s4d: "Provozujete studio? Nabízíme zvýhodněné ceny pro pravidelné odběratele a komplexní zásobování vašeho provozu.",
+    s5t: "Servis & záruky", s5d: "Plná záruka na všechny produkty, rychlé řešení reklamací a odborná podpora při problémech se zařízením.",
+    prd_label: "Sortiment", prd_title: "NÁŠ ", prd_view: "Zobrazit",
+    p1n: "Tetovací strojky", p1d: "Pen, rotary, coil — Bishop, Cheyenne, FK Irons, Mast, Dragonhawk a další prémiové značky.",
+    p2n: "Barvy & inkousty", p2d: "World Famous, Dynamic, Intenze, Eternal, Quantum — EU certifikované, živé a trvanlivé barvy.",
+    p3n: "Cartridges & jehly", p3d: "Kwadron, Elite, Cheyenne — jednorázové, sterilní, pro každý styl a techniku tetování.",
+    p4n: "Napájení & nožní spínače", p4d: "Stabilní zdroje s přesným nastavením volts pro dokonalou kontrolu nad strojkem.",
+    p5n: "Hygienické potřeby", p5d: "Dezinfekce, ochranné fólie, rukavice, savé podložky, jednorázové pomůcky pro čisté studio.",
+    p6n: "Příslušenství & doplňky", p6d: "Gripy, klipy, transfer papír, vazelína, přenosné pouzdra, světla a vše co studio potřebuje.",
+    p7n: "Aftercare & hojení", p7d: "Speciální krémy, ochranné fólie Dermalize, přípravky pro rychlé a bezproblémové hojení tetování.",
+    p8n: "Sterilizace & bezpečnost", p8d: "Autoklávy, sterilizační sáčky, indikátory — vše pro provoz studia v souladu s hygienickými normami.",
+    cnt_label: "Kde nás najdete", cnt_title: "KONTAKT & ",
+    cnt_addr: "Adresa", cnt_addr_sub: "Najdete nás v centru Prahy — detaily na mapě níže",
+    cnt_phone: "Telefon", cnt_hours: "Otevírací doba",
+    mon: "Pondělí – Pátek", sat: "Sobota", sun: "Neděle", closed: "Zavřeno",
+    cnt_note: "Navštivte nás nebo nás kontaktujte pro více informací o sortimentu, velkoobchodních cenách nebo speciálních objednávkách.",
+    footer_copy: "© 2025 Only Tattoo Shop Praha — To nejlepší pro tatéry"
+  },
+  en: {
+    nav_adv: "Advantages", nav_srv: "Services", nav_prd: "Products", nav_cnt: "Contact", nav_home: "Home",
+    hero_tag: "Prague · Professional supplies for tattoo artists",
+    hero_sub: "The best for tattooers — professional supplies & equipment",
+    hero_btn1: "Browse products", hero_btn2: "Contact", scroll: "Scroll",
+    adv_label: "Why us", adv1_t: "Top brands", adv1_d: "We offer only trusted world-class brands — Kwadron, Bishop, Cheyenne, Dynamic, World Famous and more.",
+    adv2_t: "Fast delivery", adv2_d: "In stock and made to order. Shipments dispatched the same or next business day.",
+    adv3_t: "Professional approach", adv3_d: "A team with years of industry experience who tattoo themselves. We know what a tattoo artist truly needs.",
+    adv4_t: "Physical store + e-shop", adv4_d: "Visit us in Prague or shop online — always the same quality and price.",
+    adv5_t: "Certified products", adv5_d: "All inks and needles meet strict EU standards. Your client is safe.",
+    adv6_t: "Loyalty program", adv6_d: "Regular customers get individual pricing, discounts and early access to exclusive new arrivals.",
+    stat1: "products in stock", stat2: "top brands", stat3: "satisfied artists", stat4: "h dispatch",
+    srv_label: "What we offer", srv_badge: "For tattoo artists · Prague",
+    s1t: "Personal consultation", s1d: "We help you choose the right equipment for your tattooing style. Free consultation — in-store or by phone.",
+    s2t: "Equipment sales", s2d: "Machines, cartridges, inks, needles, power supplies, accessories — everything under one roof.",
+    s3t: "Hygiene supplies", s3d: "Disinfectants, protective films, gloves, healing products — everything for a safe and professional studio.",
+    s4t: "Wholesale for studios", s4d: "Running a studio? We offer preferential prices for regular customers and full supply management.",
+    s5t: "Service & warranties", s5d: "Full warranty on all products, fast claims resolution and expert support for equipment issues.",
+    prd_label: "Assortment", prd_view: "View",
+    p1n: "Tattoo machines", p1d: "Pen, rotary, coil — Bishop, Cheyenne, FK Irons, Mast, Dragonhawk and other premium brands.",
+    p2n: "Inks & colors", p2d: "World Famous, Dynamic, Intenze, Eternal, Quantum — EU certified, vivid and lasting colors.",
+    p3n: "Cartridges & needles", p3d: "Kwadron, Elite, Cheyenne — disposable, sterile, for every style and technique.",
+    p4n: "Power supplies & pedals", p4d: "Stable power sources with precise voltage control for perfect machine performance.",
+    p5n: "Hygiene supplies", p5d: "Disinfectants, protective films, gloves, absorbent pads, disposable tools for a clean studio.",
+    p6n: "Accessories", p6d: "Grips, clips, transfer paper, petroleum jelly, carry cases, lights and everything your studio needs.",
+    p7n: "Aftercare & healing", p7d: "Special creams, Dermalize protective film, products for fast and trouble-free tattoo healing.",
+    p8n: "Sterilization & safety", p8d: "Autoclaves, sterilization pouches, indicators — all for studio operation in line with hygiene standards.",
+    cnt_label: "Find us", cnt_addr: "Address", cnt_addr_sub: "Find us in the center of Prague — details on the map below",
+    cnt_phone: "Phone", cnt_hours: "Opening hours",
+    mon: "Monday – Friday", sat: "Saturday", sun: "Sunday", closed: "Closed",
+    cnt_note: "Visit us or contact us for more information on our range, wholesale pricing or special orders.",
+    footer_copy: "© 2025 Only Tattoo Shop Prague — The best for tattoo artists"
+  },
+  de: {
+    nav_adv: "Vorteile", nav_srv: "Leistungen", nav_prd: "Sortiment", nav_cnt: "Kontakt", nav_home: "Start",
+    hero_tag: "Prag · Professionelle Ausstattung für Tätowierer",
+    hero_sub: "Das Beste für Tätowierer — professionelles Zubehör & Ausrüstung",
+    hero_btn1: "Sortiment ansehen", hero_btn2: "Kontakt", scroll: "Scroll",
+    adv_label: "Warum wir", adv1_t: "Top-Marken", adv1_d: "Wir bieten nur bewährte Weltmarken — Kwadron, Bishop, Cheyenne, Dynamic, World Famous und mehr.",
+    adv2_t: "Schnelle Lieferung", adv2_d: "Lager- und Bestellware. Versand am gleichen oder nächsten Werktag.",
+    adv3_t: "Professioneller Ansatz", adv3_d: "Ein Team mit jahrelanger Branchenerfahrung, das selbst tätowiert. Wir wissen, was ein Tätowierer wirklich braucht.",
+    adv4_t: "Laden + Online-Shop", adv4_d: "Besuchen Sie uns persönlich in Prag oder kaufen Sie bequem online — immer gleiche Qualität und Preis.",
+    adv5_t: "Zertifizierte Produkte", adv5_d: "Alle Farben und Nadeln erfüllen strenge EU-Normen. Ihr Kunde ist sicher.",
+    adv6_t: "Treueprogramm", adv6_d: "Stammkunden erhalten individuelle Preise, Rabatte und frühen Zugang zu exklusiven Neuheiten.",
+    stat1: "Produkte auf Lager", stat2: "Top-Marken", stat3: "zufriedene Tätowierer", stat4: "h Versand",
+    srv_label: "Unser Angebot", srv_badge: "Für Tätowierer · Prag",
+    s1t: "Persönliche Beratung", s1d: "Wir helfen Ihnen, die richtige Ausrüstung für Ihren Tätowierstil zu finden. Kostenlose Beratung — im Laden oder per Telefon.",
+    s2t: "Ausrüstungsverkauf", s2d: "Maschinen, Cartridges, Farben, Nadeln, Netzteile, Zubehör — alles unter einem Dach.",
+    s3t: "Hygienebedarf", s3d: "Desinfektionsmittel, Schutzfolien, Handschuhe, Heilmittel — alles für ein sicheres Studio.",
+    s4t: "Großhandel für Studios", s4d: "Betreiben Sie ein Studio? Sonderpreise für Stammkunden und vollständige Versorgung.",
+    s5t: "Service & Garantien", s5d: "Vollgarantie auf alle Produkte, schnelle Reklamationsbearbeitung und Fachsupport.",
+    prd_label: "Sortiment", prd_view: "Ansehen",
+    p1n: "Tätowiermaschinen", p1d: "Pen, Rotary, Coil — Bishop, Cheyenne, FK Irons, Mast, Dragonhawk und weitere Premium-Marken.",
+    p2n: "Farben & Tinten", p2d: "World Famous, Dynamic, Intenze, Eternal, Quantum — EU-zertifiziert, lebendig und langlebig.",
+    p3n: "Cartridges & Nadeln", p3d: "Kwadron, Elite, Cheyenne — Einweg, steril, für jeden Stil und jede Technik.",
+    p4n: "Netzteile & Fußschalter", p4d: "Stabile Netzteile mit präziser Spannungsregelung für perfekte Maschinenkontrolle.",
+    p5n: "Hygienebedarf", p5d: "Desinfektionsmittel, Schutzfolien, Handschuhe, Unterlagen, Einwegmaterial für sauberes Studio.",
+    p6n: "Zubehör", p6d: "Griffe, Clips, Transferpapier, Vaseline, Tragetaschen, Leuchten und alles was das Studio braucht.",
+    p7n: "Aftercare & Heilung", p7d: "Spezialcremes, Dermalize Schutzfolie, Präparate für schnelle und problemlose Tattoo-Heilung.",
+    p8n: "Sterilisation & Sicherheit", p8d: "Autoklaven, Sterilisationsbeutel, Indikatoren — alles für hygienekonforme Studioführung.",
+    cnt_label: "Wo Sie uns finden", cnt_addr: "Adresse", cnt_addr_sub: "Im Zentrum von Prag — Details auf der Karte unten",
+    cnt_phone: "Telefon", cnt_hours: "Öffnungszeiten",
+    mon: "Montag – Freitag", sat: "Samstag", sun: "Sonntag", closed: "Geschlossen",
+    cnt_note: "Besuchen Sie uns oder kontaktieren Sie uns für mehr Informationen zu Sortiment, Großhandelspreisen oder Sonderbestellungen.",
+    footer_copy: "© 2025 Only Tattoo Shop Prag — Das Beste für Tätowierer"
+  },
+  ru: {
+    nav_adv: "Преимущества", nav_srv: "Услуги", nav_prd: "Ассортимент", nav_cnt: "Контакты", nav_home: "Главная",
+    hero_tag: "Прага · Профессиональное снаряжение для тату-мастеров",
+    hero_sub: "Лучшее для мастеров тату — профессиональные материалы и оборудование",
+    hero_btn1: "Смотреть ассортимент", hero_btn2: "Контакты", scroll: "Вниз",
+    adv_label: "Почему мы", adv1_t: "Топ-бренды", adv1_d: "Только проверенные мировые бренды — Kwadron, Bishop, Cheyenne, Dynamic, World Famous и другие.",
+    adv2_t: "Быстрая доставка", adv2_d: "Товары в наличии и под заказ. Отправка в тот же или следующий рабочий день.",
+    adv3_t: "Профессиональный подход", adv3_d: "Команда с многолетним опытом в индустрии, которая сама делает тату. Мы знаем, что нужно мастеру.",
+    adv4_t: "Магазин + интернет-магазин", adv4_d: "Приходите лично в Прагу или покупайте онлайн — всегда одинаковое качество и цена.",
+    adv5_t: "Сертифицированные товары", adv5_d: "Все краски и иглы соответствуют строгим нормам ЕС. Ваш клиент в безопасности.",
+    adv6_t: "Программа лояльности", adv6_d: "Постоянные клиенты получают индивидуальные цены, скидки и ранний доступ к эксклюзивным новинкам.",
+    stat1: "товаров в наличии", stat2: "топ-брендов", stat3: "довольных мастеров", stat4: "ч отправка",
+    srv_label: "Что мы предлагаем", srv_badge: "Для тату-мастеров · Прага",
+    s1t: "Личная консультация", s1d: "Помогаем выбрать правильное оборудование для вашего стиля тату. Бесплатная консультация — в магазине или по телефону.",
+    s2t: "Продажа оборудования", s2d: "Машины, картриджи, краски, иглы, блоки питания, аксессуары — всё под одной крышей.",
+    s3t: "Гигиенические материалы", s3d: "Дезинфекция, защитные плёнки, перчатки, средства для заживления — всё для безопасного студии.",
+    s4t: "Оптом для студий", s4d: "Работаете в студии? Специальные цены для постоянных клиентов и полное снабжение вашей работы.",
+    s5t: "Сервис & гарантии", s5d: "Полная гарантия на все товары, быстрое решение претензий и экспертная поддержка по оборудованию.",
+    prd_label: "Ассортимент", prd_view: "Смотреть",
+    p1n: "Тату-машинки", p1d: "Pen, rotary, coil — Bishop, Cheyenne, FK Irons, Mast, Dragonhawk и другие премиальные бренды.",
+    p2n: "Краски & чернила", p2d: "World Famous, Dynamic, Intenze, Eternal, Quantum — сертифицированы ЕС, яркие и стойкие.",
+    p3n: "Картриджи & иглы", p3d: "Kwadron, Elite, Cheyenne — одноразовые, стерильные, для любого стиля и техники.",
+    p4n: "Блоки питания & педали", p4d: "Стабильные блоки с точной регулировкой вольт для идеального контроля машинки.",
+    p5n: "Гигиенические материалы", p5d: "Дезинфектанты, защитные плёнки, перчатки, впитывающие подкладки — для чистой работы.",
+    p6n: "Аксессуары & допоборудование", p6d: "Рукоятки, клипы, трансферная бумага, вазелин, кейсы, лампы и всё необходимое для студии.",
+    p7n: "Aftercare & заживление", p7d: "Специальные кремы, защитная плёнка Dermalize, средства для быстрого и беспроблемного заживления.",
+    p8n: "Стерилизация & безопасность", p8d: "Автоклавы, стерилизационные пакеты, индикаторы — для работы студии согласно нормам гигиены.",
+    cnt_label: "Где нас найти", cnt_addr: "Адрес", cnt_addr_sub: "В центре Праги — подробности на карте ниже",
+    cnt_phone: "Телефон", cnt_hours: "Часы работы",
+    mon: "Понедельник – Пятница", sat: "Суббота", sun: "Воскресенье", closed: "Закрыто",
+    cnt_note: "Приходите к нам или свяжитесь для получения информации об ассортименте, оптовых ценах или специальных заказах.",
+    footer_copy: "© 2025 Only Tattoo Shop Прага — Лучшее для тату-мастеров"
+  }
+};
+
+let currentLang = 'cs';
+
+function setLang(lang) {
+  currentLang = lang;
+  const t = i18n[lang];
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (t[key]) el.textContent = t[key];
+  });
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent === lang.toUpperCase());
+  });
+  // Update html lang
+  document.documentElement.lang = lang;
+}
+
+// ─── LOADER ───
+window.addEventListener('load', () => {
+  let pct = 0;
+  const pctEl = document.getElementById('loaderPct');
+  const interval = setInterval(() => {
+    pct += Math.random() * 12;
+    if (pct >= 100) { pct = 100; clearInterval(interval); }
+    if (pctEl) pctEl.textContent = Math.floor(pct) + '%';
+    if (pct >= 100) {
+      setTimeout(() => {
+        document.getElementById('loader').classList.add('hidden');
+      }, 400);
+    }
+  }, 120);
+});
+
+// ─── NAV SCROLL ───
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60);
+});
+
+// ─── CURSOR ───
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursor-ring');
+let mx = 0, my = 0, rx = 0, ry = 0;
+window.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+function animCursor() {
+  cursor.style.left = mx + 'px';
+  cursor.style.top  = my + 'px';
+  rx += (mx - rx) * .12;
+  ry += (my - ry) * .12;
+  ring.style.left = rx + 'px';
+  ring.style.top  = ry + 'px';
+  requestAnimationFrame(animCursor);
+}
+animCursor();
+document.querySelectorAll('a,button,.adv-card,.service-item,.product-card').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    cursor.style.width = '20px';
+    cursor.style.height = '20px';
+    ring.style.width = '56px';
+    ring.style.height = '56px';
+  });
+  el.addEventListener('mouseleave', () => {
+    cursor.style.width = '12px';
+    cursor.style.height = '12px';
+    ring.style.width = '36px';
+    ring.style.height = '36px';
+  });
+});
+
+// ─── SCROLL REVEAL ───
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      // Trigger counters when stats band reveals
+      if (entry.target.closest('.stats-band')) startCounters();
+    }
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ─── COUNTERS ───
+let countersStarted = false;
+function startCounters() {
+  if (countersStarted) return;
+  countersStarted = true;
+  document.querySelectorAll('[data-count]').forEach(el => {
+    const target = parseInt(el.getAttribute('data-count'));
+    let current = 0;
+    const step = Math.ceil(target / 60);
+    const timer = setInterval(() => {
+      current = Math.min(current + step, target);
+      el.textContent = current + (target >= 100 ? '+' : '');
+      if (current >= target) clearInterval(timer);
+    }, 28);
+  });
+}
+
+// ─── MOBILE MENU ───
+function toggleMenu() {
+  const h = document.getElementById('hamburger');
+  const m = document.getElementById('mobileMenu');
+  h.classList.toggle('open');
+  m.classList.toggle('open');
+  document.body.style.overflow = m.classList.contains('open') ? 'hidden' : '';
+}
+
+// ─── STAGGER REVEAL for adv-cards ───
+document.querySelectorAll('.adv-card.reveal').forEach((el, i) => {
+  el.style.transitionDelay = (i * 0.08) + 's';
+});
+document.querySelectorAll('.product-card.reveal').forEach((el, i) => {
+  el.style.transitionDelay = (i * 0.07) + 's';
+});
+</script>
+</body>
+</html>
